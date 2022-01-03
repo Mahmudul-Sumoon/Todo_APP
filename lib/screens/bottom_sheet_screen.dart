@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+//import 'package:todo_provider/models/dialog.dart';
 
 class BottomSheetScreen extends StatelessWidget {
   BottomSheetScreen({Key? key, required this.addNewTitle}) : super(key: key);
@@ -8,7 +9,7 @@ class BottomSheetScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20.0),
@@ -45,10 +46,22 @@ class BottomSheetScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  addNewTitle(newTitle);
+                  if (newTitle == null) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          Future.delayed(const Duration(seconds: 1), () {
+                            Navigator.of(context).pop(true);
+                          });
+                          return const AlertDialog(
+                            title: Text('First Enter a Task'),
+                          );
+                        });
+                  } else {
+                    addNewTitle(newTitle);
+                  }
                 },
-                child: Text("ADD"),
-                style: ButtonStyle(),
+                child: const Text("ADD"),
               )
             ],
           ),

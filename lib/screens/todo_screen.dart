@@ -6,6 +6,8 @@ import 'package:todo_provider/screens/bottom_sheet_screen.dart';
 import 'package:todo_provider/widgets/todo_list_item.dart';
 
 class TodoScreen extends StatefulWidget {
+  const TodoScreen({Key? key}) : super(key: key);
+
   @override
   State<TodoScreen> createState() => _TodoScreenState();
 }
