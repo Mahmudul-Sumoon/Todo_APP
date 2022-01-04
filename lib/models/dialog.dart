@@ -8,7 +8,7 @@ Dialog leadDialog = Dialog(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
+      children: const <Widget>[
         Text(
           'First Enter a Task',
           style: TextStyle(color: Colors.blueAccent, fontSize: 22.0),

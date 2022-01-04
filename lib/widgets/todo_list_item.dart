@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 
-class ListItem extends StatefulWidget {
-  const ListItem({
+class ListItem extends StatelessWidget {
+  ListItem({
     required this.title,
     required this.isChecked,
     required this.toogleDone,
-    Key? key,
-  }) : super(key: key);
+    required this.deleteTodo,
+  });
   final String title;
   final bool isChecked;
   final Function toogleDone;
-  @override
-  State<ListItem> createState() => _ListItemState();
-}
+  final Function deleteTodo;
 
-class _ListItemState extends State<ListItem> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onLongPress: () {
+        deleteTodo();
+      },
       leading: CircleAvatar(
         backgroundColor: Colors.blueAccent,
         child: Text(
-          widget.title[0],
+          title[0],
           style: TextStyle(
             fontWeight: FontWeight.w900,
             color: Colors.white,
@@ -29,15 +29,15 @@ class _ListItemState extends State<ListItem> {
         ),
       ),
       title: Text(
-        widget.title,
+        title,
         style: TextStyle(
-          decoration: widget.isChecked ? TextDecoration.lineThrough : null,
+          decoration: isChecked ? TextDecoration.lineThrough : null,
         ),
       ),
       trailing: Checkbox(
         activeColor: Colors.blueAccent,
-        value: widget.isChecked,
-        onChanged: (newValue) => widget.toogleDone(newValue),
+        value: isChecked,
+        onChanged: (newValue) => toogleDone(newValue),
       ),
     );
   }

@@ -1,50 +1,20 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:todo_provider/models/task.dart';
+import 'package:todo_provider/models/task_data.dart';
 import 'package:todo_provider/screens/bottom_sheet_screen.dart';
 import 'package:todo_provider/widgets/todo_list_item.dart';
+import 'package:provider/provider.dart';
 
-class TodoScreen extends StatefulWidget {
+class TodoScreen extends StatelessWidget {
   const TodoScreen({Key? key}) : super(key: key);
-
-  @override
-  State<TodoScreen> createState() => _TodoScreenState();
-}
-
-class _TodoScreenState extends State<TodoScreen> {
-  List<Task> tasks = [
-    Task(isDone: false, taskName: "SLEEP"),
-    Task(isDone: false, taskName: "EAT"),
-    Task(isDone: false, taskName: "WALK")
-  ];
-  void addTask(String newTitle) {
-    setState(() {
-      tasks.add(Task(isDone: false, taskName: newTitle));
-    });
-    Navigator.pop(context);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            //backgroundColor: Color(0xFF757575),
-            backgroundColor: Colors.transparent,
-            context: context,
-            builder: (BuildContext context) => BottomSheetScreen(
-              addNewTitle: addTask,
-            ),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
       backgroundColor: Colors.blueAccent,
       body: Padding(
         padding: const EdgeInsets.only(
-          //   bottom: 30,
           top: 30,
         ),
         child: Column(
@@ -80,8 +50,8 @@ class _TodoScreenState extends State<TodoScreen> {
                 horizontal: 20.0,
               ),
               child: Text(
-                '${tasks.length} Tasks',
-                style: TextStyle(
+                '${Provider.of<TaskData>(context).taskCount} Tasks',
+                style: const TextStyle(
                   fontSize: 15.0,
                   fontWeight: FontWeight.w400,
                   color: Colors.white,
@@ -101,23 +71,40 @@ class _TodoScreenState extends State<TodoScreen> {
                     topRight: Radius.circular(20.0),
                   ),
                 ),
-                child: ListView.builder(
-                    itemCount: tasks.length,
-                    itemBuilder: (context, index) {
-                      return ListItem(
-                        title: tasks[index].taskName,
-                        isChecked: tasks[index].isDone,
-                        toogleDone: (bool newValue) {
-                          setState(() {
-                            tasks[index].toggleDone();
-                          });
-                        },
-                      );
-                    }),
+                child: Consumer<TaskData>(
+                  builder: (context, taskData, child) {
+                    return ListView.builder(
+                        itemCount: taskData.taskCount,
+                        itemBuilder: (context, index) {
+                          final task = taskData.tasks[index];
+                          return ListItem(
+                            title: task.taskName,
+                            isChecked: task.isDone,
+                            toogleDone: (bool newValue) {
+                              taskData.updateCheckbox(task);
+                            },
+                            deleteTodo: () {
+                              taskData.deleteTask(task);
+                            },
+                          );
+                        });
+                  },
+                ),
               ),
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            //backgroundColor: Color(0xFF757575),
+            backgroundColor: Colors.transparent,
+            context: context,
+            builder: (BuildContext context) => const BottomSheetScreen(),
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
